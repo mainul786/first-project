@@ -1,8 +1,15 @@
 import { Schema, model } from 'mongoose';
-import { Guradian, LocalGurdian, Student, Username } from './student.interface';
+import {
+  TGuradian,
+  TLocalGurdian,
+  TStudent,
+  // StudentMethods,// for instance methods
+  StudentModel,
+  TUsername,
+} from './student.interface';
 import validator from 'validator';
 
-const userNameSchema = new Schema<Username>({
+const userNameSchema = new Schema<TUsername>({
   firstName: {
     type: String,
     trim: true,
@@ -27,7 +34,7 @@ const userNameSchema = new Schema<Username>({
   lastName: { type: String, required: true },
 });
 
-const gurdianNameSchema = new Schema<Guradian>({
+const gurdianNameSchema = new Schema<TGuradian>({
   fatherName: { type: String },
   fatherOccupation: { type: String },
   fatherContctNo: { type: String },
@@ -36,14 +43,18 @@ const gurdianNameSchema = new Schema<Guradian>({
   motherContactNo: { type: String },
 });
 
-const localGurdianSchema = new Schema<LocalGurdian>({
+const localGurdianSchema = new Schema<TLocalGurdian>({
   name: { type: String },
   occupation: { type: String },
   contactNo: { type: String },
   address: { type: String },
 });
 
-const studentSchema = new Schema<Student>({
+//instance methods
+// const studentSchema = new Schema<TStudent,  StudentModel, StudentMethods>({
+
+//static methods
+const studentSchema = new Schema<TStudent, StudentModel>({
   id: { type: String, required: true, unique: true },
   name: {
     type: userNameSchema,
@@ -87,4 +98,16 @@ const studentSchema = new Schema<Student>({
   },
 });
 
-export const StudentModel = model<Student>('Student', studentSchema);
+// static method
+studentSchema.statics.isUserExists = async function (id: string) {
+  const existingUser = await Student.findOne({ id });
+  return existingUser;
+};
+
+// instance method schema method call
+// studentSchema.methods.isUserExists = async function (id: string) {
+//   const existingUser = await Student.findOne({ id });
+//   return existingUser;
+// };
+
+export const Student = model<TStudent, StudentModel>('Student', studentSchema);

@@ -1,6 +1,6 @@
-import { Schema, model, connect } from 'mongoose';
+import { Model } from 'mongoose';
 
-export type Guradian = {
+export type TGuradian = {
   fatherName: string;
   fatherOccupation: string;
   fatherContctNo: string;
@@ -9,22 +9,22 @@ export type Guradian = {
   motherContactNo: string;
 };
 
-export type Username = {
+export type TUsername = {
   firstName: string;
   middleName?: string;
   lastName: string;
 };
 
-export type LocalGurdian = {
+export type TLocalGurdian = {
   name: string;
   occupation: string;
   contactNo: string;
   address: string;
 };
 
-export type Student = {
+export type TStudent = {
   id: string;
-  name: Username;
+  name: TUsername;
   gender: 'Male' | 'Female' | 'other';
   dateofbirth: string;
   email: string;
@@ -33,8 +33,24 @@ export type Student = {
   bloodGroup: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
   presentAddress: string;
   permenantAddress: string;
-  gurdianName: Guradian;
-  localGurdian: LocalGurdian;
+  gurdianName: TGuradian;
+  localGurdian: TLocalGurdian;
   isProfile?: String;
   active: 'active' | 'blocked';
 };
+
+//apply static methods
+export interface StudentModel extends Model<TStudent> {
+  isUserExists(id: string): Promise<TStudent | null>;
+}
+
+// instance methods
+// export type StudentMethods = {
+//   isUserExists(id: string): Promise<TStudent | null>;
+// };
+
+// export type StudentModel = Model<
+//   TStudent,
+//   Record<string, never>,
+//   StudentMethods
+// >;
