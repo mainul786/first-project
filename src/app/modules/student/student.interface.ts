@@ -11,7 +11,7 @@ export type Guradian = {
 
 export type Username = {
   firstName: string;
-  middleName: string;
+  middleName?: string;
   lastName: string;
 };
 
@@ -25,7 +25,7 @@ export type LocalGurdian = {
 export type Student = {
   id: string;
   name: Username;
-  gender: 'male' | 'Female';
+  gender: 'Male' | 'Female' | 'other';
   dateofbirth: string;
   email: string;
   contactNo: string;
@@ -35,6 +35,6 @@ export type Student = {
   permenantAddress: string;
   gurdianName: Guradian;
   localGurdian: LocalGurdian;
-  isProfile: String;
+  isProfile?: String;
   active: 'active' | 'blocked';
 };

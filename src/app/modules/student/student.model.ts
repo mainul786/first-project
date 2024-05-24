@@ -1,43 +1,90 @@
-import { Schema, model, connect } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { Guradian, LocalGurdian, Student, Username } from './student.interface';
+import validator from 'validator';
 
 const userNameSchema = new Schema<Username>({
-  firstName: { type: String, required: true },
-  middleName: { type: String },
+  firstName: {
+    type: String,
+    trim: true,
+    required: true,
+    validate: {
+      validator: function (value: String) {
+        const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1);
+        console.log(firstNameStr);
+        return firstNameStr === value;
+      },
+      message: `{VALUE} is not in capitalize format`,
+    },
+  },
+  middleName: {
+    type: String,
+    validate: {
+      validator: (value: string) => validator.isAlpha(value),
+      message: `{VALUE} is not valid string type data`,
+    },
+    required: true,
+  },
   lastName: { type: String, required: true },
 });
 
 const gurdianNameSchema = new Schema<Guradian>({
-  fatherName: { type: String, required: true },
-  fatherOccupation: { type: String, required: true },
-  fatherContctNo: { type: String, required: true },
-  motherName: { type: String, required: true },
-  motherOccupation: { type: String, required: true },
-  motherContactNo: { type: String, required: true },
+  fatherName: { type: String },
+  fatherOccupation: { type: String },
+  fatherContctNo: { type: String },
+  motherName: { type: String },
+  motherOccupation: { type: String },
+  motherContactNo: { type: String },
 });
 
 const localGurdianSchema = new Schema<LocalGurdian>({
-  name: { type: String, required: true },
-  occupation: { type: String, required: true },
-  contactNo: { type: String, required: true },
-  address: { type: String, required: true },
+  name: { type: String },
+  occupation: { type: String },
+  contactNo: { type: String },
+  address: { type: String },
 });
 
 const studentSchema = new Schema<Student>({
-  id: { type: String, required: true },
-  name: userNameSchema,
-  gender: ['Male', 'Female'],
+  id: { type: String, required: true, unique: true },
+  name: {
+    type: userNameSchema,
+    required: true,
+  },
+  gender: {
+    type: String,
+    enum: ['Male', 'Female', 'other'],
+    required: true,
+  },
   dateofbirth: { type: String },
-  email: { type: String, required: true },
+  email: {
+    type: String,
+    required: [true, 'Email is required'],
+    unique: true,
+    validate: {
+      validator: (value: string) => validator.isEmail(value),
+      message: `{VALUE} is not a valid email type`,
+    },
+  },
   contactNo: { type: String, required: true },
-  emargencyContactNo: { type: String },
+  emargencyContactNo: { type: String, required: true },
   bloodGroup: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
   presentAddress: { type: String },
   permenantAddress: { type: String },
-  gurdianName: gurdianNameSchema,
-  localGurdian: localGurdianSchema,
+  gurdianName: {
+    type: gurdianNameSchema,
+  },
+  localGurdian: {
+    type: localGurdianSchema,
+  },
   isProfile: { type: String, required: true },
-  active: ['active', 'blocked'],
+  active: {
+    type: String,
+    enum: {
+      values: ['active', 'blocked'],
+      message: `{VALUE} is not valid`,
+      default: 'active',
+    },
+    required: true,
+  },
 });
 
 export const StudentModel = model<Student>('Student', studentSchema);
