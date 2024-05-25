@@ -24,6 +24,7 @@ export type TLocalGurdian = {
 
 export type TStudent = {
   id: string;
+  password:string,
   name: TUsername;
   gender: 'Male' | 'Female' | 'other';
   dateofbirth: string;
@@ -37,6 +38,7 @@ export type TStudent = {
   localGurdian: TLocalGurdian;
   isProfile?: String;
   active: 'active' | 'blocked';
+  isDeleted:boolean;
 };
 
 //apply static methods

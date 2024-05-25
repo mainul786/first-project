@@ -27,6 +27,7 @@ const localGurdianValidationSchema = Joi.object({
 
 const studentValidationSchema = Joi.object({
   id: Joi.string().required(),
+  password: Joi.string().required(),
   name: userNameValidationSchema.required(),
   gender: Joi.string().valid('Male', 'Female', 'other').required(),
   dateofbirth: Joi.string().allow(''),
@@ -42,6 +43,7 @@ const studentValidationSchema = Joi.object({
   localGurdian: localGurdianValidationSchema,
   isProfile: Joi.string().required(),
   active: Joi.string().valid('active', 'blocked').default('active').required(),
+  isDeleted:Joi.boolean(),
 });
 
 // enum ar poroborte valid babohar korahoy joy library khetre

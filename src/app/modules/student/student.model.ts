@@ -8,6 +8,10 @@ import {
   TUsername,
 } from './student.interface';
 import validator from 'validator';
+import bcrypt from 'bcrypt';
+
+const saltRounds = 12
+
 
 const userNameSchema = new Schema<TUsername>({
   firstName: {
@@ -56,6 +60,7 @@ const localGurdianSchema = new Schema<TLocalGurdian>({
 //static methods
 const studentSchema = new Schema<TStudent, StudentModel>({
   id: { type: String, required: true, unique: true },
+  password: { type: String, required: true, unique: true },
   name: {
     type: userNameSchema,
     required: true,
@@ -96,7 +101,57 @@ const studentSchema = new Schema<TStudent, StudentModel>({
     },
     required: true,
   },
+  isDeleted:{
+   type: Boolean,
+  default:false
+  }
+},{
+  toJSON:{
+    virtuals:true,
+  }
 });
+
+
+// virtual
+
+studentSchema.virtual('fullName').get(function(){
+  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`
+})
+
+// Query Middleware
+
+studentSchema.pre('find', function(next){
+this.find({isDeleted:{$ne:true}})
+  next()
+})
+studentSchema.pre('findOne', function(next){
+this.find({isDeleted:{$ne:true}})
+  next()
+})
+
+
+
+
+//aggregation 
+studentSchema.pre('aggregate', function(next){
+  this.pipeline().unshift({$match:{isDeleted:{$ne: true}}})
+    next()
+  })
+  
+
+//document middleware
+studentSchema.pre('save', async function(next){
+  // console.log(this, `pre show data before set database`)
+  const user = this.password;
+ this.password = await bcrypt.hash(user, Number(saltRounds))
+ next()
+})
+
+studentSchema.post('save', function(doc, next){
+  doc.password = '';
+  // console.log(doc, `post data show data after set database`)
+  next()
+})
 
 // static method
 studentSchema.statics.isUserExists = async function (id: string) {
