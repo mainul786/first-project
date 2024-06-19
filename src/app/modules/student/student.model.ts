@@ -8,10 +8,6 @@ import {
   TUsername,
 } from './student.interface';
 import validator from 'validator';
-import bcrypt from 'bcrypt';
-
-const saltRounds = 12
-
 
 const userNameSchema = new Schema<TUsername>({
   firstName: {
@@ -58,100 +54,81 @@ const localGurdianSchema = new Schema<TLocalGurdian>({
 // const studentSchema = new Schema<TStudent,  StudentModel, StudentMethods>({
 
 //static methods
-const studentSchema = new Schema<TStudent, StudentModel>({
-  id: { type: String, required: true, unique: true },
-  password: { type: String, required: true, unique: true },
-  name: {
-    type: userNameSchema,
-    required: true,
-  },
-  gender: {
-    type: String,
-    enum: ['Male', 'Female', 'other'],
-    required: true,
-  },
-  dateofbirth: { type: String },
-  email: {
-    type: String,
-    required: [true, 'Email is required'],
-    unique: true,
-    validate: {
-      validator: (value: string) => validator.isEmail(value),
-      message: `{VALUE} is not a valid email type`,
+const studentSchema = new Schema<TStudent, StudentModel>(
+  {
+    id: { type: String, required: true, unique: true },
+    user: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'user id is required'],
+      unique: true,
+      ref: 'User',
     },
-  },
-  contactNo: { type: String, required: true },
-  emargencyContactNo: { type: String, required: true },
-  bloodGroup: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
-  presentAddress: { type: String },
-  permenantAddress: { type: String },
-  gurdianName: {
-    type: gurdianNameSchema,
-  },
-  localGurdian: {
-    type: localGurdianSchema,
-  },
-  isProfile: { type: String, required: true },
-  active: {
-    type: String,
-    enum: {
-      values: ['active', 'blocked'],
-      message: `{VALUE} is not valid`,
-      default: 'active',
+    name: {
+      type: userNameSchema,
+      required: true,
     },
-    required: true,
-  },
-  isDeleted:{
-   type: Boolean,
-  default:false
-  }
-},{
-  toJSON:{
-    virtuals:true,
-  }
-});
+    gender: {
+      type: String,
+      enum: ['Male', 'Female', 'other'],
+      required: true,
+    },
+    dateofbirth: { type: String },
+    email: {
+      type: String,
+      required: [true, 'Email is required'],
+      unique: true,
+      validate: {
+        validator: (value: string) => validator.isEmail(value),
+        message: `{VALUE} is not a valid email type`,
+      },
+    },
+    contactNo: { type: String, required: true },
+    emargencyContactNo: { type: String, required: true },
+    bloodGroup: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+    presentAddress: { type: String },
+    permenantAddress: { type: String },
+    gurdianName: {
+      type: gurdianNameSchema,
+    },
+    localGurdian: {
+      type: localGurdianSchema,
+    },
+    isProfile: { type: String, required: true },
 
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  {
+    toJSON: {
+      virtuals: true,
+    },
+  },
+);
 
 // virtual
 
-studentSchema.virtual('fullName').get(function(){
-  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`
-})
+studentSchema.virtual('fullName').get(function () {
+  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
+});
 
 // Query Middleware
 
-studentSchema.pre('find', function(next){
-this.find({isDeleted:{$ne:true}})
-  next()
-})
-studentSchema.pre('findOne', function(next){
-this.find({isDeleted:{$ne:true}})
-  next()
-})
+studentSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+studentSchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
 
-
-
-
-//aggregation 
-studentSchema.pre('aggregate', function(next){
-  this.pipeline().unshift({$match:{isDeleted:{$ne: true}}})
-    next()
-  })
-  
-
-//document middleware
-studentSchema.pre('save', async function(next){
-  // console.log(this, `pre show data before set database`)
-  const user = this.password;
- this.password = await bcrypt.hash(user, Number(saltRounds))
- next()
-})
-
-studentSchema.post('save', function(doc, next){
-  doc.password = '';
-  // console.log(doc, `post data show data after set database`)
-  next()
-})
+//aggregation
+studentSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
 
 // static method
 studentSchema.statics.isUserExists = async function (id: string) {

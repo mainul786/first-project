@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 export type TGuradian = {
   fatherName: string;
@@ -24,7 +24,7 @@ export type TLocalGurdian = {
 
 export type TStudent = {
   id: string;
-  password:string,
+  user: Types.ObjectId;
   name: TUsername;
   gender: 'Male' | 'Female' | 'other';
   dateofbirth: string;
@@ -37,8 +37,7 @@ export type TStudent = {
   gurdianName: TGuradian;
   localGurdian: TLocalGurdian;
   isProfile?: String;
-  active: 'active' | 'blocked';
-  isDeleted:boolean;
+  isDeleted: boolean;
 };
 
 //apply static methods
