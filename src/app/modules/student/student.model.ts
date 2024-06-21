@@ -56,7 +56,6 @@ const localGurdianSchema = new Schema<TLocalGurdian>({
 //static methods
 const studentSchema = new Schema<TStudent, StudentModel>(
   {
-    id: { type: String, required: true, unique: true },
     user: {
       type: Schema.Types.ObjectId,
       required: [true, 'user id is required'],
@@ -94,11 +93,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       type: localGurdianSchema,
     },
     isProfile: { type: String, required: true },
-
-    isDeleted: {
-      type: Boolean,
-      default: false,
-    },
   },
   {
     toJSON: {

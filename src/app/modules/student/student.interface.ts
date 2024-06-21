@@ -23,7 +23,7 @@ export type TLocalGurdian = {
 };
 
 export type TStudent = {
-  id: string;
+  password: string;
   user: Types.ObjectId;
   name: TUsername;
   gender: 'Male' | 'Female' | 'other';
@@ -37,7 +37,6 @@ export type TStudent = {
   gurdianName: TGuradian;
   localGurdian: TLocalGurdian;
   isProfile?: String;
-  isDeleted: boolean;
 };
 
 //apply static methods

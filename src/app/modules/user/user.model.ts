@@ -36,7 +36,7 @@ const UserSchema = new Schema<TUser>(
   },
 );
 
-//document password has middleware
+//document password hash middleware
 UserSchema.pre('save', async function (next) {
   const user = this.password;
   this.password = await bcrypt.hash(user, Number(config.bcrypt_salt_rounds));
