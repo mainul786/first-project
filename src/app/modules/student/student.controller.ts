@@ -1,10 +1,8 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { StudentServices } from './student.service';
-import studentValidationSchema from './student.validationJoyLibrary';
 import sendResponse from '../../utils/sendResponse';
 import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
-// import studentValidationSchema from './student.validationZod';
 
 const getStudentService = catchAsync(async (req, res) => {
   const result = await StudentServices.getStudentsDataFromDB();

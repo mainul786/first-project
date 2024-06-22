@@ -23,11 +23,12 @@ export type TLocalGurdian = {
 };
 
 export type TStudent = {
+  id: string;
   password: string;
   user: Types.ObjectId;
   name: TUsername;
   gender: 'Male' | 'Female' | 'other';
-  dateofbirth: string;
+  dateofbirth: Date;
   email: string;
   contactNo: string;
   emargencyContactNo: string;

@@ -56,6 +56,7 @@ const localGurdianSchema = new Schema<TLocalGurdian>({
 //static methods
 const studentSchema = new Schema<TStudent, StudentModel>(
   {
+    id: { type: String },
     user: {
       type: Schema.Types.ObjectId,
       required: [true, 'user id is required'],
@@ -71,7 +72,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       enum: ['Male', 'Female', 'other'],
       required: true,
     },
-    dateofbirth: { type: String },
+    dateofbirth: { type: Date },
     email: {
       type: String,
       required: [true, 'Email is required'],
