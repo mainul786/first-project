@@ -41,6 +41,18 @@ const AcademicSemesterSchema = new Schema<TAcademicSemester>(
   },
 );
 
+// Validation Check already register or not
+AcademicSemesterSchema.pre('save', async function (next) {
+  const exitsSemester = await AcademicSemester.findOne({
+    name: this.name,
+    year: this.year,
+  });
+  if (exitsSemester) {
+    throw new Error('Semester already Exists!');
+  }
+  next();
+});
+
 export const AcademicSemester = model<TAcademicSemester>(
   'semester',
   AcademicSemesterSchema,
