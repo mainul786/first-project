@@ -28,7 +28,6 @@ const getSingleServices = catchAsync(async (req, res) => {
 
 const deletedSingleService = catchAsync(async (req, res) => {
   const { studentId } = req.params;
-  console.log(studentId);
   const result = await StudentServices.deletedDataFromDb(studentId);
 
   sendResponse(res, {

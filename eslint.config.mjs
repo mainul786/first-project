@@ -6,9 +6,15 @@ export default [
   // languageOptions: { globals: globals.browser},
   {
     languageOptions: {
-      globals: globals.node,
+      globals: {
+        ...globals.node,
+      },
     },
+  },
+  {
     ignores: ['**/node_modules/', '.dist/'],
+  },
+  {
     rules: {
       'no-unused-vars': 'error',
       'no-unused-expressions': 'error',

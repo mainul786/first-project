@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
 import {
-  TGuradian,
-  TLocalGurdian,
+  TGuardian,
+  TLocalGuardian,
   TStudent,
   // StudentMethods,// for instance methods
   StudentModel,
@@ -34,16 +34,16 @@ const userNameSchema = new Schema<TUsername>({
   lastName: { type: String, required: true },
 });
 
-const gurdianNameSchema = new Schema<TGuradian>({
+const guardianNameSchema = new Schema<TGuardian>({
   fatherName: { type: String },
   fatherOccupation: { type: String },
-  fatherContctNo: { type: String },
+  fatherContactNo: { type: String },
   motherName: { type: String },
   motherOccupation: { type: String },
   motherContactNo: { type: String },
 });
 
-const localGurdianSchema = new Schema<TLocalGurdian>({
+const localGuardianSchema = new Schema<TLocalGuardian>({
   name: { type: String },
   occupation: { type: String },
   contactNo: { type: String },
@@ -72,7 +72,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       enum: ['Male', 'Female', 'other'],
       required: true,
     },
-    dateofbirth: { type: Date },
+    dateofbirth: { type: String },
     email: {
       type: String,
       required: [true, 'Email is required'],
@@ -87,11 +87,15 @@ const studentSchema = new Schema<TStudent, StudentModel>(
     bloodGroup: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
     presentAddress: { type: String },
     permenantAddress: { type: String },
-    gurdianName: {
-      type: gurdianNameSchema,
+    guardianName: {
+      type: guardianNameSchema,
     },
-    localGurdian: {
-      type: localGurdianSchema,
+    localGuardian: {
+      type: localGuardianSchema,
+    },
+    admissionSemester: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicSemester',
     },
     isProfile: { type: String, required: true },
   },

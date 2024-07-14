@@ -1,9 +1,9 @@
 import { Model, Types } from 'mongoose';
 
-export type TGuradian = {
+export type TGuardian = {
   fatherName: string;
   fatherOccupation: string;
-  fatherContctNo: string;
+  fatherContactNo: string;
   motherName: string;
   motherOccupation: string;
   motherContactNo: string;
@@ -15,7 +15,7 @@ export type TUsername = {
   lastName: string;
 };
 
-export type TLocalGurdian = {
+export type TLocalGuardian = {
   name: string;
   occupation: string;
   contactNo: string;
@@ -28,15 +28,16 @@ export type TStudent = {
   user: Types.ObjectId;
   name: TUsername;
   gender: 'Male' | 'Female' | 'other';
-  dateofbirth: Date;
+  dateofbirth: string;
   email: string;
   contactNo: string;
   emargencyContactNo: string;
   bloodGroup: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
   presentAddress: string;
   permenantAddress: string;
-  gurdianName: TGuradian;
-  localGurdian: TLocalGurdian;
+  guardianName: TGuardian;
+  localGuardian: TLocalGuardian;
+  admissionSemester: Types.ObjectId;
   isProfile?: String;
 };
 
