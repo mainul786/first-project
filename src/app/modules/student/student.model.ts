@@ -95,10 +95,15 @@ const studentSchema = new Schema<TStudent, StudentModel>(
     },
     admissionSemester: {
       type: Schema.Types.ObjectId,
-      ref: 'AcademicSemester',
+      ref: 'semester',
     },
     isProfile: { type: String, required: true },
+    academicDeaptment: {
+      type: Schema.Types.ObjectId,
+      ref: 'academicDepartment',
+    },
   },
+
   {
     toJSON: {
       virtuals: true,

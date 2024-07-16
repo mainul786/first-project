@@ -1,3 +1,5 @@
+import httpStatus from 'http-status';
+import AppError from '../../errors/AppError';
 import {
   AcademicSemesterCode,
   AcademicSemesterName,
@@ -43,7 +45,7 @@ AcademicSemesterSchema.pre('save', async function (next) {
     year: this.year,
   });
   if (exitsSemester) {
-    throw new Error('Semester already Exists!');
+    throw new AppError(httpStatus.NOT_FOUND, 'Semester already Exists!');
   }
   next();
 });

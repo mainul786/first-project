@@ -39,6 +39,7 @@ export type TStudent = {
   localGuardian: TLocalGuardian;
   admissionSemester: Types.ObjectId;
   isProfile?: String;
+  academicDeaptment: Types.ObjectId;
 };
 
 //apply static methods
