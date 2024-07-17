@@ -13,7 +13,7 @@ const findLastStudentId = async () => {
   )
     .sort({ createdAt: -1 })
     .lean();
-  return lastStudentId?.id ? lastStudentId.id.substring(6) : undefined;
+  return lastStudentId?.id ? lastStudentId.id : undefined;
 };
 
 // year semestercode 4 digit number

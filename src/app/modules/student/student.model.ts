@@ -17,7 +17,6 @@ const userNameSchema = new Schema<TUsername>({
     validate: {
       validator: function (value: String) {
         const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1);
-        console.log(firstNameStr);
         return firstNameStr === value;
       },
       message: `{VALUE} is not in capitalize format`,
@@ -98,6 +97,12 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       ref: 'semester',
     },
     isProfile: { type: String, required: true },
+
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+
     academicDeaptment: {
       type: Schema.Types.ObjectId,
       ref: 'academicDepartment',

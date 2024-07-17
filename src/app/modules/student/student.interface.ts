@@ -38,7 +38,8 @@ export type TStudent = {
   guardianName: TGuardian;
   localGuardian: TLocalGuardian;
   admissionSemester: Types.ObjectId;
-  isProfile?: String;
+  isProfile?: string;
+  isDeleted: boolean;
   academicDeaptment: Types.ObjectId;
 };
 
