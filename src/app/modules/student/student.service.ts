@@ -3,6 +3,7 @@ import { Student } from './student.model';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 import { User } from '../user/user.model';
+import { TStudent } from './student.interface';
 
 const getStudentsDataFromDB = async () => {
   const result = await Student.find()
@@ -20,6 +21,36 @@ const getSingleDataFromDb = async (id: string) => {
   const result = await Student.findOne({ id });
   // use aggregate
   // const result = await Student.aggregate([{ $match: { id: id } }]);
+  return result;
+};
+const updateStudentIntoDB = async (id: string, payload: Partial<TStudent>) => {
+  const { name, guardianName, localGuardian, ...remaningStudentData } = payload;
+
+  const modifiedUpdatedData: Record<string, unknown> = {
+    ...remaningStudentData,
+  };
+
+  if (name && Object.keys(name).length) {
+    for (const [key, value] of Object.entries(name)) {
+      modifiedUpdatedData[`name.${key}`] = value;
+    }
+  }
+  if (guardianName && Object.keys(guardianName).length) {
+    for (const [key, value] of Object.entries(guardianName)) {
+      modifiedUpdatedData[`guardianName.${key}`] = value;
+    }
+  }
+  if (localGuardian && Object.keys(localGuardian).length) {
+    for (const [key, value] of Object.entries(localGuardian)) {
+      modifiedUpdatedData[`localGuardian.${key}`] = value;
+    }
+  }
+
+  const result = await Student.findOneAndUpdate({ id }, modifiedUpdatedData, {
+    new: true,
+    runValidators: true,
+  });
+
   return result;
 };
 
@@ -52,11 +83,13 @@ const deletedDataFromDb = async (id: string) => {
   } catch (err) {
     await session.abortTransaction();
     await session.endSession();
+    throw new Error('Faild to delete student!');
   }
 };
 
 export const StudentServices = {
   getStudentsDataFromDB,
   getSingleDataFromDb,
+  updateStudentIntoDB,
   deletedDataFromDb,
 };
