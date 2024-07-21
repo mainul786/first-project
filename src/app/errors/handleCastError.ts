@@ -14,7 +14,7 @@ const handleCastError = (
   const statusCode = 400;
   return {
     statusCode,
-    message: 'Validation Error',
+    message: 'Invalid Id',
     errorSources,
   };
 };
