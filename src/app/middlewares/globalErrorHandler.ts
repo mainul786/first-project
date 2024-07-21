@@ -1,16 +1,14 @@
-import { NextFunction, Response, Request, ErrorRequestHandler } from 'express';
-import { ZodError, ZodIssue } from 'zod';
+import { ErrorRequestHandler } from 'express';
+import { ZodError } from 'zod';
 import config from '../config';
 import handleZodError from '../errors/handleZodError';
-
-export type TErrorSource = {
-  path: string | number;
-  message: string;
-}[];
+import handleValidationError from '../errors/handleValidationError';
+import { TErrorSource } from '../interface/error';
+import handleCastError from '../errors/handleCastError';
 
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  let statusCode =  500;
- let message ='something went is wrong!';
+  let statusCode = 500;
+  let message = 'something went is wrong!';
 
   let errorSources: TErrorSource = [
     {
@@ -21,21 +19,29 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
 
   // const statusCode = 400;
 
-  
-
   if (err instanceof ZodError) {
     const simplifiedError = handleZodError(err);
-   statusCode = simplifiedError?.statusCode;
-   message = simplifiedError?.message;
-   errorSources = simplifiedError?.errorSources.
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSources = simplifiedError?.errorSources;
+  } else if (err?.name === 'ValidationError') {
+    const simplifiedError = handleValidationError(err);
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSources = simplifiedError?.errorSources;
+  } else if (err?.name === 'CastError') {
+    const simplifiedError = handleCastError(err);
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSources = simplifiedError?.errorSources;
   }
 
-  return res.status(statusCode).json( {
-    success:false,
+  return res.status(statusCode).json({
+    success: false,
     message,
     errorSources,
     err,
-    stack: config.NODE_ENV === 'development' ? err?.stack : null
-  })
+    stack: config.NODE_ENV === 'development' ? err?.stack : null,
+  });
 };
 export default globalErrorHandler;
