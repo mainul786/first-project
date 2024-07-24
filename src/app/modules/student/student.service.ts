@@ -5,8 +5,16 @@ import httpStatus from 'http-status';
 import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
 
-const getStudentsDataFromDB = async () => {
-  const result = await Student.find()
+const getStudentsDataFromDB = async (query: Record<string, unknown>) => {
+  let searchTerm = '';
+  if (query?.searchTerm) {
+    searchTerm = query?.searchTerm as string;
+  }
+  const result = await Student.find({
+    $or: ['email', 'name.firstName', 'presentAddress'].map((field) => ({
+      [field]: { $regex: searchTerm, $options: 'i' },
+    })),
+  })
     .populate('admissionSemester')
     .populate({
       path: 'academicDeaptment',
@@ -80,10 +88,10 @@ const deletedDataFromDb = async (id: string) => {
     await session.commitTransaction();
     await session.endSession();
     return deletedStudent;
-  } catch (err) {
+  } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();
-    throw new Error('Faild to delete student!');
+    throw new Error(err);
   }
 };
 
