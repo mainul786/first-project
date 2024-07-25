@@ -5,10 +5,10 @@ import httpStatus from 'http-status';
 import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
 
-const searchAbleStudentFields = ['email', 'name.firstName', 'presentAddress']
+const searchAbleStudentFields = ['email', 'name.firstName', 'presentAddress'];
 
 const getStudentsDataFromDB = async (query: Record<string, unknown>) => {
-  const queryObj = {...query}
+  const queryObj = { ...query };
   let searchTerm = '';
   if (query?.searchTerm) {
     searchTerm = query?.searchTerm as string;
@@ -18,13 +18,15 @@ const getStudentsDataFromDB = async (query: Record<string, unknown>) => {
     $or: searchAbleStudentFields.map((field) => ({
       [field]: { $regex: searchTerm, $options: 'i' },
     })),
-  })
+  });
 
-  // filtering 
-  const exculdeFields = ['searchTerm','sort', 'limit']
-  exculdeFields.forEach(el => delete queryObj[el]);
+  // filtering
+  const exculdeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
+  exculdeFields.forEach((el) => delete queryObj[el]);
+  console.log({ query }, { queryObj });
 
-  const filterQuery = searchQuery.find(queryObj)
+  const filterQuery = searchQuery
+    .find(queryObj)
     .populate('admissionSemester')
     .populate({
       path: 'academicDeaptment',
@@ -33,30 +35,41 @@ const getStudentsDataFromDB = async (query: Record<string, unknown>) => {
       },
     });
 
+  // sort
 
-    // sort
+  let sort = '-createdAt';
 
-let sort = '-createdAt';
+  if (query.sort) {
+    sort = query.sort as string;
+  }
+  const sortQuery = filterQuery.sort(sort);
 
+  //limit
+  let limit = 1;
 
-if(query.sort){
-  sort = query.sort as string;
- 
-}
-const sortQuery = filterQuery.sort(sort);
+  if (query.limit) {
+    limit = Number(query.limit);
+  }
 
+  // pageniation
+  let page = 1;
+  let skip = 0;
+  if (query.page) {
+    page = Number(query.page);
+    skip = (page - 1) * limit;
+  }
 
-//limit 
-let limit = 1;
+  const peginateQuery = sortQuery.skip(skip);
+  const limitQuery = peginateQuery.limit(limit);
 
-if(query.limit){
-  limit = query.limit;
-}
+  // Field Filtering
+  let fields = '-__v';
+  if (query.fields) {
+    fields = (query.fields as string).split(',').join(' ');
+  }
 
-const limitQuery = await sortQuery.limit(limit);
-
-
-return limitQuery;
+  const fieldQuery = await limitQuery.select(fields);
+  return fieldQuery;
 };
 
 const getSingleDataFromDb = async (id: string) => {
