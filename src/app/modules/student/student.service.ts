@@ -4,8 +4,9 @@ import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
-import QueryBulders from '../../bulders/queryBulders';
+
 import { searchAbleStudentFields } from './student.constant';
+import QueryBulders from '../../bulders/QueryBulders';
 
 // const searchAbleStudentFields = ['email', 'name.firstName', 'presentAddress'];
 
