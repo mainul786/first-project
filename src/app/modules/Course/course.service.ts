@@ -1,3 +1,5 @@
+import QueryBulders from '../../bulders/QueryBulders';
+import { courseSearchAbleField } from './course.constant';
 import { TCourse } from './course.insterface';
 import { course } from './course.model';
 
@@ -6,8 +8,18 @@ const createCourseIntoDB = async (payload: TCourse) => {
   return result;
 };
 
-const getAllCouserFromDB = async () => {
-  const result = await course.find();
+const getAllCouserFromDB = async (query: Record<string, unknown>) => {
+  const courseQuery = new QueryBulders(
+    course.find().populate('preRequisiteCourse.course'),
+    query,
+  )
+    .search(courseSearchAbleField)
+    .filter()
+    .sort()
+    .peginate()
+    .fieldFilter();
+
+  const result = await courseQuery.modelQuery;
   return result;
 };
 
