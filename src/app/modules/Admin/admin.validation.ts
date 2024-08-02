@@ -1,59 +1,56 @@
 import { z } from 'zod';
+import { BloodGroup, Gender } from './admin.constant';
 
-const CreateUserNameSchema = z.object({
-  firstName: z.string().min(1, 'First name is required'),
-  middleName: z.string().optional(),
-  lastName: z.string().min(1, 'Last name is required'),
+const createUserNameValidationSchema = z.object({
+  firstName: z.string().min(1).max(20),
+  middleName: z.string().max(20),
+  lastName: z.string().max(20),
 });
 
-const CreateAdminSchema = z.object({
+export const createAdminValidationSchema = z.object({
   body: z.object({
-    id: z.string().min(1, 'ID is required'),
-    designation: z.string().min(1, 'Designation is required'),
-    name: CreateUserNameSchema,
-    gender: z.enum(['male', 'female', 'other']),
-    dateOfBirth: z.string().optional(),
-    email: z.string().email('Invalid email address'),
-    contactNo: z.string().min(10, 'Contact number is required'),
-    emergencyContactNo: z
-      .string()
-      .min(10, 'Emergency contact number is required'),
-    bloodGroup: z
-      .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O+'])
-      .optional(),
-    presentAddress: z.string().min(1, 'Present address is required'),
-    permanentAddress: z.string().min(1, 'Permanent address is required'),
-    profileImg: z.string().optional(),
-    isDeleted: z.boolean(),
+    password: z.string().max(20),
+    admin: z.object({
+      designation: z.string(),
+      name: createUserNameValidationSchema,
+      gender: z.enum([...Gender] as [string, ...string[]]),
+      dateOfBirth: z.string().optional(),
+      email: z.string().email(),
+      contactNo: z.string(),
+      emergencyContactNo: z.string(),
+      bloogGroup: z.enum([...BloodGroup] as [string, ...string[]]),
+      presentAddress: z.string(),
+      permanentAddress: z.string(),
+      profileImg: z.string(),
+    }),
   }),
 });
 
-const UpdateUserNameSchema = z.object({
-  firstName: z.string().min(1, 'First name is required'),
-  middleName: z.string().optional(),
-  lastName: z.string().min(1, 'Last name is required'),
+const updateUserNameValidationSchema = z.object({
+  firstName: z.string().min(3).max(20).optional(),
+  middleName: z.string().min(3).max(20).optional(),
+  lastName: z.string().min(3).max(20).optional(),
 });
 
-const UpdateAdminSchema = z.object({
+export const updateAdminValidationSchema = z.object({
   body: z.object({
-    id: z.string().min(1, 'ID is required'),
-    designation: z.string().min(1, 'Designation is required'),
-    name: UpdateUserNameSchema,
-    gender: z.enum(['male', 'female', 'other']),
-    dateOfBirth: z.string().optional(),
-    email: z.string().email('Invalid email address'),
-    contactNo: z.string().min(10, 'Contact number is required'),
-    emergencyContactNo: z
-      .string()
-      .min(10, 'Emergency contact number is required'),
-    bloodGroup: z
-      .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O+'])
-      .optional(),
-    presentAddress: z.string().min(1, 'Present address is required'),
-    permanentAddress: z.string().min(1, 'Permanent address is required'),
-    profileImg: z.string().optional(),
-    isDeleted: z.boolean(),
+    admin: z.object({
+      name: updateUserNameValidationSchema,
+      designation: z.string().max(30).optional(),
+      gender: z.enum([...Gender] as [string, ...string[]]).optional(),
+      dateOfBirth: z.string().optional(),
+      email: z.string().email().optional(),
+      contactNo: z.string().optional(),
+      emergencyContactNo: z.string().optional(),
+      bloogGroup: z.enum([...BloodGroup] as [string, ...string[]]).optional(),
+      presentAddress: z.string().optional(),
+      permanentAddress: z.string().optional(),
+      profileImg: z.string().optional(),
+    }),
   }),
 });
 
-export const AdminValidation = { CreateAdminSchema, UpdateAdminSchema };
+export const AdminValidations = {
+  createAdminValidationSchema,
+  updateAdminValidationSchema,
+};

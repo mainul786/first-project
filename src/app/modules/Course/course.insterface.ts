@@ -1,3 +1,4 @@
+import { EXPECTATION_FAILED } from 'http-status';
 import { Types } from 'mongoose';
 
 export type TPreRequisiteCourse = {
@@ -12,4 +13,9 @@ export type TCourse = {
   credits: number;
   preRequisiteCourse: [TPreRequisiteCourse];
   isDeleted: boolean;
+};
+
+export type TCoursefaculty = {
+  course: Types.ObjectId;
+  faculties: [Types.ObjectId];
 };

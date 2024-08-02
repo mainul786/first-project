@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 import QueryBulders from '../../bulders/QueryBulders';
 import { courseSearchAbleField } from './course.constant';
-import { TCourse } from './course.insterface';
-import { course } from './course.model';
+import { TCourse, TCoursefaculty } from './course.insterface';
+import { course, CourseFaculty } from './course.model';
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 
@@ -123,10 +123,45 @@ const deleteCourseFromDB = async (id: string) => {
   return result;
 };
 
+const assignFacultiesWithCourseIntoDB = async (
+  id: string,
+  payload: Partial<TCoursefaculty>,
+) => {
+  const result = await CourseFaculty.findByIdAndUpdate(
+    id,
+    {
+      course: id,
+      $addToSet: { faculties: { $each: payload } },
+    },
+    {
+      upsert: true,
+      new: true,
+    },
+  );
+  return result;
+};
+
+const removeFacultiesFromCourseFromDB = async (
+  id: string,
+  payload: Partial<TCoursefaculty>,
+) => {
+  const result = await CourseFaculty.findByIdAndUpdate(
+    id,
+    {
+      $pull: { faculties: { $in: payload } },
+    },
+    {
+      new: true,
+    },
+  );
+  return result;
+};
 export const courseServices = {
   createCourseIntoDB,
   getAllCouserFromDB,
   getSingleCourseFromDB,
   updateCourseIntoDB,
   deleteCourseFromDB,
+  assignFacultiesWithCourseIntoDB,
+  removeFacultiesFromCourseFromDB,
 };
