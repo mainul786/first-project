@@ -1,4 +1,3 @@
-import { EXPECTATION_FAILED } from 'http-status';
 import { Types } from 'mongoose';
 
 export type TPreRequisiteCourse = {

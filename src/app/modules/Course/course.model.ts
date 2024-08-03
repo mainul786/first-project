@@ -1,4 +1,4 @@
-import { model, Schema, Types } from 'mongoose';
+import { model, Schema } from 'mongoose';
 import {
   TCourse,
   TCoursefaculty,
@@ -40,12 +40,12 @@ const courseSchema = new Schema<TCourse>({
   },
 });
 
-export const course = model<TCourse>('Course', courseSchema);
+export const Course = model<TCourse>('Course', courseSchema);
 
 const coureseFacultySchema = new Schema<TCoursefaculty>({
   course: {
     types: Schema.Types.ObjectId,
-    ref: 'course',
+    ref: 'Course',
     unique: true,
   },
   faculties: [
