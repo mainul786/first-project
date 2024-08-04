@@ -13,7 +13,7 @@ const semesterRegistrationSchema = new Schema<TSemesterRegistration>(
     status: {
       type: String,
       enum: semesterRegistrationStatus,
-      default: 'UPCOMMING',
+      default: 'UPCOMING',
     },
     startDate: {
       type: Date,

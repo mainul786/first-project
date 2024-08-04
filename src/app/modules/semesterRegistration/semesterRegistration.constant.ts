@@ -1,1 +1,1 @@
-export const semesterRegistrationStatus = ['UPCOMMING', 'ONGOING', 'END'];
+export const semesterRegistrationStatus = ['UPCOMING', 'ONGOING', 'END'];
